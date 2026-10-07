@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fff4d6">
+<title>Emoji Drawing Coach</title>
+<style>
+  :root{
+    --bg:#fffaf0; --card:#ffffff; --ink:#222; --muted:#666;
+    --accent:#ffb703; --accent2:#fb8500; --green:#2a9d8f;
+    --line:#ddd6c8; --soft:#fff4d6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.45}
+  .wrap{max-width:760px;margin:auto;padding:18px 14px 50px}
+  header{background:linear-gradient(135deg,#fff0b8,#ffe0a3);border-radius:24px;padding:22px 18px;margin-bottom:14px}
+  h1{font-size:32px;line-height:1.1;margin:0 0 6px}
+  h2{font-size:23px;margin:0 0 10px}
+  h3{font-size:18px;margin:14px 0 7px}
+  p{margin:7px 0}
+  .sub{color:#555;font-size:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 3px 12px rgba(0,0,0,.04)}
+  .toprow{display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .day{font-weight:800;color:#8a5a00}
+  .date{font-size:14px;color:var(--muted)}
+  .emojiBox{text-align:center;background:#fffdf7;border:2px dashed #e8c86b;border-radius:20px;padding:18px;margin:14px 0}
+  .emoji{width:min(300px,72vw);margin:0 auto;line-height:1}
+  .emojiName{font-size:24px;font-weight:800;margin-top:4px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .step{background:#f7f7f7;border-radius:14px;padding:11px;text-align:center;border:1px solid #e7e7e7}
+  .step b{display:block;font-size:15px;margin-bottom:4px}
+  .shape{font-size:28px}
+  .paper{background:#fdfcf8;border:2px solid #cfc8b8;border-radius:16px;padding:15px}
+  .practice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .practice{min-height:120px;border:2px solid #bbb;border-radius:12px;padding:9px;background:white;display:flex;flex-direction:column;justify-content:space-between}
+  .practice span{font-weight:800;color:#555}
+  .practice small{color:#777}
+  .checkline{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;margin-top:14px}
+  input[type=checkbox]{width:25px;height:25px;accent-color:var(--green)}
+  textarea{width:100%;min-height:95px;border:1px solid #ccc;border-radius:12px;padding:12px;font:inherit;resize:vertical}
+  .rating{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+  .rate{border:1px solid #bbb;background:white;border-radius:12px;padding:9px 13px;font-size:16px;cursor:pointer}
+  .rate.selected{background:#ffe08a;border-color:#e7a900;font-weight:800}
+  .done{width:100%;border:0;border-radius:16px;background:var(--green);color:white;font-size:22px;font-weight:900;padding:16px;margin-top:15px;cursor:pointer}
+  .done.completed{background:#6c757d}
+  .progress{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;text-align:center}
+  .stat{background:var(--soft);border-radius:14px;padding:12px}
+  .stat b{display:block;font-size:25px}
+  .nav{display:flex;gap:9px}
+  .nav button,.secondary{flex:1;border:1px solid #bbb;background:white;border-radius:13px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
+  .tip{background:#eef8f5;border-left:5px solid var(--green);padding:12px;border-radius:10px}
+  .footer{text-align:center;color:#777;font-size:13px;margin-top:25px}
+  @media(max-width:520px){
+    .practice-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .emoji{width:260px;max-width:78vw}
+    h1{font-size:29px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>✏️ Emoji Drawing Coach</h1>
+    <div class="sub">One simple emoji. One paper. A little practice every day.</div>
+  </header>
+
+  <section class="card">
+    <div class="toprow">
+      <div><div class="day" id="dayLabel">DAY 1</div><div class="date" id="dateLabel"></div></div>
+      <div>📅 Daily Practice</div>
+    </div>
+    <div class="emojiBox">
+      <div class="emoji" id="emoji">😀</div>
+      <div class="emojiName" id="emojiName">Happy Face</div>
+    </div>
+
+    <h2>How to draw it</h2>
+    <div class="steps" id="steps"></div>
+
+    <div class="tip"><b>Today's goal:</b> Don't try to make it perfect. Draw slowly, then try again.</div>
+  </section>
+
+  <section class="card">
+    <h2>📝 Practice on paper</h2>
+    <div class="paper">
+      <p><b>1.</b> Take a piece of paper and pencil.</p>
+      <p><b>2.</b> Look at the emoji above.</p>
+      <p><b>3.</b> Follow the simple shapes.</p>
+      <p><b>4.</b> Draw it three times. Each attempt should be a little better.</p>
+
+      <div class="practice-grid">
+        <div class="practice"><span>TRY 1</span><small>Just have a go.</small><div>✏️</div></div>
+        <div class="practice"><span>TRY 2</span><small>Improve the shapes.</small><div>✏️</div></div>
+        <div class="practice"><span>TRY 3</span><small>Make your best one.</small><div>✏️</div></div>
+      </div>
+
+      <label class="checkline">
+        <input type="checkbox" id="paperDone">
+        I completed my paper practice
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>⭐ How did you do?</h2>
+    <div class="rating" id="rating">
+      <button class="rate" data-r="1">1 — Easy</button>
+      <button class="rate" data-r="2">2</button>
+      <button class="rate" data-r="3">3 — OK</button>
+      <button class="rate" data-r="4">4</button>
+      <button class="rate" data-r="5">5 — Great!</button>
+    </div>
+    <h3>What can I improve?</h3>
+    <textarea id="notes" placeholder="Example: Make the eyes smaller..."></textarea>
+    <button class="done" id="doneBtn">☑ DONE — Finish Today's Practice</button>
+  </section>
+
+  <section class="card">
+    <h2>📈 My Progress</h2>
+    <div class="progress">
+      <div class="stat"><b id="completedCount">0</b>Completed</div>
+      <div class="stat"><b id="streakCount">0</b>Day streak</div>
+      <div class="stat"><b id="totalDays">30</b>Lessons</div>
+    </div>
+    <div class="nav" style="margin-top:12px">
+      <button id="prevBtn">← Previous</button>
+      <button id="nextBtn">Next →</button>
+    </div>
+  </section>
+
+  <div class="footer">Your progress is saved on this device. No account is needed.</div>
+</div>
+
+<script>
+const lessons = [
+["happy","Happy — feeling joyful"],["sad","Sad — feeling unhappy"],["surprised","Surprised — something unexpected"],["angry","Angry — feeling upset"],["wink","Winking — playful or joking"],["love","In Love — showing affection"],["cool","Cool — confident and relaxed"],["thinking","Thinking — considering something"],["laugh","Laughing — something is very funny"],["cry","Crying — feeling very sad"],["sleepy","Sleepy — ready for bed"],["angel","Angel — innocent or good"],["party","Celebrating — having fun"],["hug","Hugging — showing care"],["scared","Scared — feeling afraid"],["yummy","Yummy — enjoying food"],["smart","Smart — clever or studious"],["calm","Calm — peaceful and relaxed"],["eyeRoll","Eye Roll — annoyed or unimpressed"],["grimace","Grimace — awkward or uncomfortable"],["adoration","Adoration — feeling great affection"],["excited","Excited — very happy about something"],["smirk","Smirk — feeling sly or amused"],["silly","Silly — playful and funny"],["furious","Furious — extremely angry"],["embarrassed","Embarrassed — feeling shy or awkward"],["curious","Curious — wanting to know more"],["giggle","Giggle — quietly amused"],["touched","Touched — emotionally moved"],["bigSmile","Big Smile — very happy"]
+];
+
+function faceSVG(type){
+const mouths={happy:'<path d="M90 170 Q150 220 210 170"/>',sad:'<path d="M92 205 Q150 160 208 205"/>',surprised:'<ellipse cx="150" cy="190" rx="24" ry="34"/>',angry:'<path d="M92 205 Q150 160 208 205"/>',wink:'<path d="M90 170 Q150 220 210 170"/>',love:'<path d="M90 170 Q150 220 210 170"/>',cool:'<path d="M90 170 Q150 220 210 170"/>',thinking:'<path d="M125 190 Q150 180 175 190"/>',laugh:'<path d="M80 165 Q150 245 220 165 Q205 220 150 220 Q95 220 80 165Z"/>',cry:'<path d="M92 205 Q150 160 208 205"/>',sleepy:'<path d="M125 190 Q150 200 175 190"/>',angel:'<path d="M90 170 Q150 220 210 170"/>',party:'<path d="M90 170 Q150 220 210 170"/>',hug:'<path d="M90 170 Q150 220 210 170"/>',scared:'<ellipse cx="150" cy="190" rx="28" ry="38"/>',yummy:'<path d="M110 175 Q150 205 190 175"/><path d="M138 185 Q150 220 162 185"/>',smart:'<path d="M90 170 Q150 220 210 170"/>',calm:'<path d="M110 180 Q150 205 190 180"/>',eyeRoll:'<path d="M105 195 Q150 178 195 195"/>',grimace:'<rect x="105" y="170" width="90" height="42" rx="8"/>',adoration:'<path d="M90 170 Q150 220 210 170"/>',excited:'<path d="M80 165 Q150 235 220 165"/>',smirk:'<path d="M110 185 Q155 215 195 178"/>',silly:'<path d="M105 175 Q150 215 195 175"/>',furious:'<path d="M95 205 Q150 165 205 205"/>',embarrassed:'<ellipse cx="150" cy="190" rx="18" ry="12"/>',curious:'<path d="M135 190 Q150 180 165 190"/>',giggle:'<path d="M90 170 Q150 220 210 170"/>',touched:'<path d="M90 170 Q150 220 210 170"/>',bigSmile:'<path d="M75 165 Q150 250 225 165 Q210 225 150 230 Q90 225 75 165Z"/>'};
+let eyes;
+if(type==='wink') eyes='<path d="M90 120 Q105 108 120 120"/><circle cx="195" cy="120" r="15"/><circle cx="195" cy="120" r="5" fill="#111"/>';
+else if(type==='cool'||type==='smart') eyes='<rect x="70" y="100" width="68" height="45" rx="9"/><rect x="162" y="100" width="68" height="45" rx="9"/><path d="M138 122 L162 122"/>';
+else if(type==='love') eyes='<path d="M105 110 C82 88 62 120 105 148 C148 120 128 88 105 110Z"/><path d="M195 110 C172 88 152 120 195 148 C238 120 218 88 195 110Z"/>';
+else if(type==='sleepy'||type==='calm') eyes='<path d="M88 122 Q105 110 122 122"/><path d="M178 122 Q195 110 212 122"/>';
+else eyes='<circle cx="105" cy="120" r="15"/><circle cx="195" cy="120" r="15"/><circle cx="105" cy="120" r="5" fill="#111"/><circle cx="195" cy="120" r="5" fill="#111"/>';
+let extra=''; if(type==='angry'||type==='furious') extra='<path d="M88 95 L125 115 M212 95 L175 115"/>'; if(type==='thinking') extra='<circle cx="220" cy="200" r="6" fill="#111"/><circle cx="238" cy="180" r="5" fill="#111"/>'; if(type==='sleepy') extra='<text x="220" y="70" font-size="34" font-weight="700" stroke="none" fill="#111">Z</text>'; if(type==='angel') extra='<ellipse cx="150" cy="35" rx="45" ry="11"/>'; if(type==='party') extra='<path d="M100 55 L150 5 L205 55Z"/>'; if(type==='hug') extra='<path d="M75 170 Q45 150 55 130 M225 170 Q255 150 245 130" stroke-width="12"/>'; if(type==='adoration') extra='<path d="M65 70 L75 90 L95 82 M235 70 L225 90 L205 82"/>'; if(type==='excited') extra='<path d="M150 45 V18 M90 55 L75 35 M210 55 L225 35"/>'; if(type==='embarrassed') extra='<circle cx="72" cy="160" r="9"/><circle cx="228" cy="160" r="9"/>';
+return `<svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="112" fill="white" stroke="#111" stroke-width="7"/><g fill="white" stroke="#111" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${eyes}${mouths[type]}${extra}</g></svg>`;
+}
+const today = new Date();
+const key = d => d.toISOString().slice(0,10);
+const startKey = "emojiCoachStart";
+if(!localStorage.getItem(startKey)) localStorage.setItem(startKey,key(today));
+
+let start = new Date(localStorage.getItem(startKey)+"T00:00:00");
+let selectedDay = Math.floor((today-start)/86400000);
+if(selectedDay<0) selectedDay=0;
+selectedDay = selectedDay % lessons.length;
+
+let state = JSON.parse(localStorage.getItem("emojiCoachState") || "{}");
+
+function save(){ localStorage.setItem("emojiCoachState",JSON.stringify(state)); }
+
+function render(){
+  const lesson=lessons[selectedDay];
+  document.getElementById("dayLabel").textContent="DAY "+(selectedDay+1);
+  document.getElementById("dateLabel").textContent=new Date(start.getTime()+selectedDay*86400000).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+  document.getElementById("emoji").innerHTML=faceSVG(lesson[0]);
+  document.getElementById("emojiName").textContent=lesson[1];
+
+  document.getElementById("steps").innerHTML=[["○","Start with the round face"],["•","Add the eyes and eyebrows"],["⌒","Add the mouth and expression"]].map((x,i)=>`<div class="step"><div class="shape">${x[0]}</div><b>Step ${i+1}</b>${x[1]}</div>`).join("");
+
+  const s=state[selectedDay]||{};
+  document.getElementById("paperDone").checked=!!s.paper;
+  document.getElementById("notes").value=s.notes||"";
+  document.querySelectorAll(".rate").forEach(b=>b.classList.toggle("selected",Number(b.dataset.r)===s.rating));
+
+  const done=!!s.done;
+  const btn=document.getElementById("doneBtn");
+  btn.classList.toggle("completed",done);
+  btn.textContent=done ? "✓ DONE — Practice Completed" : "☑ DONE — Finish Today's Practice";
+
+  const completed=Object.values(state).filter(x=>x.done).length;
+  document.getElementById("completedCount").textContent=completed;
+
+  let streak=0, cursor=selectedDay;
+  while(cursor>=0 && state[cursor] && state[cursor].done){ streak++; cursor--; }
+  document.getElementById("streakCount").textContent=streak;
+}
+document.getElementById("paperDone").onchange=e=>{
+  state[selectedDay] ||= {}; state[selectedDay].paper=e.target.checked; save();
+};
+document.getElementById("notes").oninput=e=>{
+  state[selectedDay] ||= {}; state[selectedDay].notes=e.target.value; save();
+};
+document.querySelectorAll(".rate").forEach(b=>b.onclick=()=>{
+  state[selectedDay] ||= {}; state[selectedDay].rating=Number(b.dataset.r); save(); render();
+});
+document.getElementById("doneBtn").onclick=()=>{
+  state[selectedDay] ||= {};
+  state[selectedDay].done=true;
+  state[selectedDay].completedDate=key(new Date());
+  save(); render();
+};
+document.getElementById("prevBtn").onclick=()=>{
+  selectedDay=(selectedDay-1+lessons.length)%lessons.length; render(); scrollTo({top:0,behavior:"smooth"});
+};
+document.getElementById("nextBtn").onclick=()=>{
+  selectedDay=(selectedDay+1)%lessons.length; render(); scrollTo({top:0,behavior:"smooth"});
+};
+render();
+</script>
+</body>
+</html>
